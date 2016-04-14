@@ -1,130 +1,46 @@
 package encrypting;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 
 import com.sun.mail.util.BASE64DecoderStream;
 import com.sun.mail.util.BASE64EncoderStream;
 
-public class DBEnc {
+public class DBEnc { 
 	
 	
-//	public static void main(String[] args) {
-//		trial();
-//	}
+	public static void main(String[] args) {
+		String name = "Mariam";
+		String enc1 = encrptStr(name);
+		System.out.println(enc1);
+		String dec1 = decreptStr(enc1);
+		System.out.println(dec1);
+		String enc2 = encrptStr(name);
+		System.out.println(enc2);
+		String dec2 = decreptStr(enc2);
+		System.out.println(dec2);
+		
+		
+		String namek = "Mariam";
+		String enc1k = encrptStr(namek);
+		System.out.println(enc1k);
+		String dec1k = decreptStr(enc1k);
+		System.out.println(dec1k);
+		String enc2k = encrptStr(namek);
+		System.out.println(enc2k);
+		String dec2k = decreptStr(enc2k);
+		System.out.println(dec2k);
+		
+	}
 
 	
-	public static SecretKey init() {
-		
-		SecretKey key = null;
-		
-		
-		
-		FileOutputStream fos = null;
-	    FileInputStream fis = null;
-	    
-	    BufferedReader br = null;
-	    
-	    String encrypted = null;
-	    String size = null;
-	    
-	    try{
-	    	
-	    	br = new BufferedReader(new FileReader("encrypted"));
-	    	
-	    	
-	    	encrypted= br.readLine();
-	    	String ln = br.readLine();
-	    	int indexOfEqual = ln.indexOf('=');
-	    	size = ln.substring(indexOfEqual + 1, ln.length());
-	    	
-	    } catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-	    	if (br != null) {
-	    		try {
-					br.close();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	    	}
-	    }
-		
-	    if (encrypted.equals("true")) {
-	    	try {
-				fis = new FileInputStream("dbkey");
-				byte[] b = new byte[Integer.parseInt(size)];
-				fis.read(b);
-				key = new SecretKeySpec(b, "DES");
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				if (fis != null) {
-					try {
-						fis.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-	    } else {
-	    	try {
-				key = KeyGenerator.getInstance("DES").generateKey();
-				byte[] b = key.getEncoded();
-				PrintWriter pw = new PrintWriter("encrypted");
-				pw.println("true");
-				pw.println("size=" + String.valueOf(b.length));
-				if (pw != null) {
-					pw.close();
-				}
-				fos=new FileOutputStream("dbkey");
-				fos.write(b);
-			    fos.flush();
-			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} finally {
-				if (fos != null) {
-					try {
-						fos.close();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-	    }
-		
-		return key;
-	}
 	
 		
 	    
@@ -133,11 +49,40 @@ public class DBEnc {
 	public static String encrptStr(String str) {
 		Cipher ecipher;
 
-		SecretKey key;
+		SecretKey key = null;
 		
-		
+		byte[] encryptKey = "This is a test DES enc key".getBytes();
+
+		// Create a DESede key spec from the key
+		DESKeySpec spec = null;
 		try {
-			key = init();
+			spec = new DESKeySpec(encryptKey);
+			// Get the secret key factor for generating DESede keys
+			SecretKeyFactory keyFactory = SecretKeyFactory
+					.getInstance("DES");
+
+			// Generate a DESede SecretKey object
+			key = keyFactory.generateSecret(spec);
+		} catch (InvalidKeyException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
+//		String key_password = "key_in_string_des_";
+//		byte[] b = key_password.getBytes();
+		try {
+//			key = init();
+			
+//			key = new SecretKeySpec(b, "DES");
+		
 			ecipher = Cipher.getInstance("DES");
 
 			ecipher.init(Cipher.ENCRYPT_MODE, key);
@@ -167,14 +112,39 @@ public class DBEnc {
 	public static String decreptStr(String str) {
 		Cipher dcipher;
 
-		SecretKey key;
+		SecretKey key = null;
 		
+		byte[] encryptKey = "This is a test DES enc key".getBytes();
+
+		// Create a DESede key spec from the key
+		DESKeySpec spec = null;
+		try {
+			spec = new DESKeySpec(encryptKey);
+			// Get the secret key factor for generating DESede keys
+			SecretKeyFactory keyFactory = SecretKeyFactory
+					.getInstance("DES");
+
+			// Generate a DESede SecretKey object
+			key = keyFactory.generateSecret(spec);
+		} catch (InvalidKeyException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidKeySpecException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		try {
 
 			// generate secret key using DES algorithm
 
-			key = init();
+			//key = init();
+			
+//			key = new SecretKeySpec(b, "DES");
+			
 			dcipher = Cipher.getInstance("DES");
 
 			dcipher.init(Cipher.DECRYPT_MODE, key);

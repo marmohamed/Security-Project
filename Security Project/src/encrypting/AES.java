@@ -9,12 +9,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -24,8 +28,18 @@ public class AES {
 		byte[] tmp = null;
 	
 		tmp = encrypt(data);
+		System.out.println("temp : " + tmp.toString());
 		byte[] printString = decrypt(tmp);
 		System.out.println(Arrays.equals(data, printString));
+		
+		
+		byte[] data2 = "abcdefghijkl".getBytes();
+		byte[] tmp2 = null;
+	
+		tmp2 = encrypt(data2);
+		System.out.println("temp 2 : " + tmp2.toString());
+		byte[] printString2 = decrypt(tmp2);
+		System.out.println(Arrays.equals(data2, printString2));
 
 	}
 
@@ -161,7 +175,9 @@ public class AES {
 	public static SecretKey generateKey() throws NoSuchAlgorithmException {
 		KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
 		keyGenerator.init(128);
+//		keyGenerator.in
 		SecretKey key = keyGenerator.generateKey();
+		
 		return key;
 	}
 

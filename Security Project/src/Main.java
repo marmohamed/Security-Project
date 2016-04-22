@@ -1,5 +1,7 @@
 import java.sql.SQLException;
 
+import org.bouncycastle.util.encoders.Base64Encoder;
+
 import encrypting.DBEnc;
 import models.User;
 
@@ -73,17 +75,8 @@ public class Main {
 	}
 	
 	
-//	public static void main(String[] args) {
-//		String name = "Mariam";
-//		
-//		String enc = DBEnc.encrptStr(name);
-//		System.out.println(enc);
-//		String dec = DBEnc.decreptStr(enc);
-//		System.out.println(dec);
-//		String enc2 = DBEnc.encrptStr(name);
-//		System.out.println(enc2);
-//	}
-//	
+	
+	
 	
 	
 	

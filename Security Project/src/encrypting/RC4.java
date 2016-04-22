@@ -53,57 +53,69 @@ public class RC4 {
 //		Path path = Paths.get("/Users/apple/Desktop/test.rtf");
 		
 		
-		// 1
-		String xml1 = "Login";
+		String name = "Mariam";
+		System.out.println("Name = " + name);
 		
-		byte[] classBytes = xml1.getBytes();
+		byte[] encrypted = encrypt(name.getBytes());
+		String encryptedName = encrypted.toString();
+		System.out.println("encrypted name = " + encryptedName);
 		
-		System.out.println("\n\n" + xml1);
-//		
-//	// 2
-//		
-		byte[] enc = encrypt("[B@3ac42916".getBytes());
+		byte[] decrypted = decrypt(encryptedName.getBytes());
+		String decryptedName = decrypted.toString();
+		System.out.println("decrypted name = " + decryptedName);
 		
-		String xml2 = new String(enc.toString());
-		System.out.println("\n\n" + xml2);
-//		
 		
-
-//		String xmlk = "Login";
-//		
-//		byte[] classBytesk = xmlk.getBytes();
-//		
-//		System.out.println("\n\n" + xmlk);
-//		
-//		// 2
-//		
-//		byte[] enck = encrypt(classBytesk);
-//		
-//		String xml2k = new String(enck.toString());
-//		System.out.println("\n\n" + xml2k);
-//		
-//		
-//		///
-//		
 //		// 1
+//		String xml1 = "Login";
 //		
+//		byte[] classBytes = xml1.getBytes();
 //		
-		// 3
-		byte[] deck = decrypt(enc);
-		
-		String xml3k = new String(deck.toString());
-		System.out.println("\n\n" + xml3k);
-		
-//		byte[] deck2 = decrypt(enck);
+//		System.out.println("\n\n" + xml1);
+////		
+////	// 2
+////		
+//		byte[] enc = encrypt("[B@3ac42916".getBytes());
 //		
-//		String xml3k2 = new String(deck2);
-//		System.out.println("\n\n" + xml3k2);
+//		String xml2 = new String(enc.toString());
+//		System.out.println("\n\n" + xml2);
+////		
 //		
+//
+////		String xmlk = "Login";
+////		
+////		byte[] classBytesk = xmlk.getBytes();
+////		
+////		System.out.println("\n\n" + xmlk);
+////		
+////		// 2
+////		
+////		byte[] enck = encrypt(classBytesk);
+////		
+////		String xml2k = new String(enck.toString());
+////		System.out.println("\n\n" + xml2k);
+////		
+////		
+////		///
+////		
+////		// 1
+////		
+////		
 //		// 3
-//				byte[] dec = decrypt(enc);
-//				
-//				String xml3 = new String(dec);
-//				System.out.println("\n\n" + xml3);
+//		byte[] deck = decrypt(enc);
+//		
+//		String xml3k = new String(deck.toString());
+//		System.out.println("\n\n" + xml3k);
+//		
+////		byte[] deck2 = decrypt(enck);
+////		
+////		String xml3k2 = new String(deck2);
+////		System.out.println("\n\n" + xml3k2);
+////		
+////		// 3
+////				byte[] dec = decrypt(enc);
+////				
+////				String xml3 = new String(dec);
+////				System.out.println("\n\n" + xml3);
 		
 		
 		

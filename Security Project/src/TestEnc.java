@@ -2,19 +2,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigInteger;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.RSAKeyGenParameterSpec;
-import java.security.spec.RSAPublicKeySpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,34 +68,77 @@ public class TestEnc {
 			try {
 				temp = RC4.encrypt(str.getBytes());
 				result = new String(temp.toString());
+
+				FileWriter fw = new FileWriter("rc4_str_hash.txt", true); // the
+																			// true
+																			// will
+																			// append
+																			// the
+																			// new
+																			// data
+				// System.out.println();
+				fw.write(result + "," + str + "\n");// appends the string to the
+													// file
+				fw.close();
+
 			} catch (InvalidKeyException | NoSuchAlgorithmException
 					| NoSuchPaddingException | IllegalBlockSizeException
 					| BadPaddingException | IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			break;
-			
+
 		case "desede":
 			temp = DESede.encrypt(str.getBytes());
 			result = new String(temp.toString());
+
+			FileWriter fw;
+			try {
+				fw = new FileWriter("desede_str_hash.txt", true);
+				fw.write(result + "," + str + "\n");// appends the string to the
+													// file
+				fw.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} // the true will append the new data
+			// System.out.println();
+
 			break;
 
 		case "aes":
 			try {
 				temp = AES.encrypt(str.getBytes());
 				result = new String(temp.toString());
+
+				FileWriter fw2;
+
+				fw2 = new FileWriter("aes_str_hash.txt", true);
+				fw2.write(result + "," + str + "\n");// appends the string to
+														// the file
+				fw2.close();
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 			break;
-		case "aes2":
+
+		case "aes_ecb":
 			try {
-				temp = AES2.encrypt(str +"\0\0\0");
+				temp = AES2.encrypt(str);
 				result = new String(temp.toString());
+
+				FileWriter fw2;
+
+				fw2 = new FileWriter("aes_ecb_str_hash.txt", true);
+				fw2.write(result + "," + str + "\n");// appends the string to
+														// the file
+				fw2.close();
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -111,6 +146,8 @@ public class TestEnc {
 
 			break;
 
+			
+			
 		default:
 			result = DBEnc.encrptStr(str);
 			break;
@@ -118,8 +155,7 @@ public class TestEnc {
 
 		return result;
 	}
-	
-	
+
 	public static String decrypt(String str, String encryptionAlgorithm) {
 		String result = "";
 		byte[] temp;
@@ -128,40 +164,109 @@ public class TestEnc {
 		case "rc4":
 
 			try {
-				temp = RC4.decrypt(str.getBytes());
-				result = temp.toString();
-			} catch (InvalidKeyException | NoSuchAlgorithmException
-					| NoSuchPaddingException | IllegalBlockSizeException
-					| BadPaddingException | IOException e1) {
+
+				String bytes = "";
+				String line;
+				BufferedReader br = new BufferedReader(new FileReader(
+						"rc4_str_hash.txt"));
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith(str + ",")) {
+						int indexOfComma = line.indexOf(",");
+						bytes = line.substring(indexOfComma + 1, line.length());
+						break;
+					}
+				}
+				br.close();
+
+				result = bytes;
+
+				// temp = RC4.decrypt(bytes.getBytes());
+				// result = temp.toString();
+			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			break;
-			
+
 		case "desede":
-			result = DESede.decrypt(str.getBytes());
+			try {
+
+				String bytes = "";
+				String line;
+				BufferedReader br = new BufferedReader(new FileReader(
+						"desede_str_hash.txt"));
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith(str + ",")) {
+						int indexOfComma = line.indexOf(",");
+						bytes = line.substring(indexOfComma + 1, line.length());
+						break;
+					}
+				}
+				br.close();
+
+				result = bytes;
+
+				// temp = RC4.decrypt(bytes.getBytes());
+				// result = temp.toString();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
 
 		case "aes":
 			try {
-				temp = AES.decrypt(str.getBytes());
-				result = temp.toString();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
+				String bytes = "";
+				String line;
+				BufferedReader br = new BufferedReader(new FileReader(
+						"aes_str_hash.txt"));
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith(str + ",")) {
+						int indexOfComma = line.indexOf(",");
+						bytes = line.substring(indexOfComma + 1, line.length());
+						break;
+					}
+				}
+				br.close();
+
+				result = bytes;
+
+				// temp = RC4.decrypt(bytes.getBytes());
+				// result = temp.toString();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
-		case "aes2":
+			
+		case "aes_ecb":
 			try {
-				result = AES2.decrypt(str.getBytes("UTF-8"));
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 
+				String bytes = "";
+				String line;
+				BufferedReader br = new BufferedReader(new FileReader(
+						"aes_ecb_str_hash.txt"));
+				while ((line = br.readLine()) != null) {
+					if (line.startsWith(str + ",")) {
+						int indexOfComma = line.indexOf(",");
+						bytes = line.substring(indexOfComma + 1, line.length());
+						break;
+					}
+				}
+				br.close();
+
+				result = bytes;
+
+				// temp = RC4.decrypt(bytes.getBytes());
+				// result = temp.toString();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			break;
+		
 
 		default:
 			result = DBEnc.decreptStr(str);
@@ -171,9 +276,6 @@ public class TestEnc {
 		return result;
 	}
 
-	
-	
-	
 	public static String replaceEnc(String str) {
 
 		for (Map.Entry<String, String> entry : hm_enc.entrySet()) {
@@ -184,8 +286,7 @@ public class TestEnc {
 
 		return str;
 	}
-	
-	
+
 	public static String replaceDec(String str) {
 
 		for (Map.Entry<String, String> entry : hm_dec.entrySet()) {
@@ -197,15 +298,12 @@ public class TestEnc {
 		return str;
 	}
 
-	
-	
-	
 	public static void encryptJavaFile(String fileName,
 			ArrayList<String> classNames, ArrayList<String> methodNames,
 			ArrayList<String> varNames, String encryptionAlgorithm) {
 
 		init();
-		
+
 		HashMap<String, String> encryptedBefore = new HashMap<String, String>();
 
 		BufferedReader br;
@@ -218,7 +316,7 @@ public class TestEnc {
 
 				for (String className : classNames) {
 					if (newLine.contains(className)) {
-						//System.out.println("className : " + className + "m");
+						// System.out.println("className : " + className + "m");
 						String newStr = null;
 						if (encryptedBefore.containsKey(className)) {
 							newStr = encryptedBefore.get(className);
@@ -227,7 +325,7 @@ public class TestEnc {
 							encryptedBefore.put(className, newStr);
 						}
 						newStr = "Cl_" + replaceEnc(newStr);
-//						System.out.println("after : " + newStr + "m");
+						// System.out.println("after : " + newStr + "m");
 						newLine = newLine.replace(className, newStr);
 					}
 				}
@@ -241,7 +339,7 @@ public class TestEnc {
 							newStr = encrypt(methodName, encryptionAlgorithm);
 							encryptedBefore.put(methodName, newStr);
 						}
-						
+
 						newStr = "meth_" + replaceEnc(newStr);
 						newLine = newLine.replace(methodName, newStr);
 					}
@@ -283,9 +381,8 @@ public class TestEnc {
 
 		String fileName2 = fileName.substring(indexOfLastSlash + 1, indexOfDot);
 
-		//System.out.println("f : " + fileName2 + "m");
+		// System.out.println("f : " + fileName2 + "m");
 
-		
 		String newStr = null;
 		if (encryptedBefore.containsKey(fileName2)) {
 			newStr = encryptedBefore.get(fileName2);
@@ -296,7 +393,7 @@ public class TestEnc {
 
 		newStr = "Cl_" + replaceEnc(newStr);
 
-		//System.out.println("after2 : " + newStr + "m");
+		// System.out.println("after2 : " + newStr + "m");
 
 		String newFileName = dir + newStr
 				+ fileName.substring(indexOfDot, fileName.length());
@@ -320,15 +417,14 @@ public class TestEnc {
 
 	}
 
-	
 	public static void decryptJavaFile(String fileName,
 			ArrayList<String> classNames, ArrayList<String> methodNames,
 			ArrayList<String> varNames, String encryptionAlgorithm) {
-		
-		
+
 		init();
-		
-		//HashMap<String, String> encryptedBefore = new HashMap<String, String>();
+
+		// HashMap<String, String> encryptedBefore = new HashMap<String,
+		// String>();
 
 		BufferedReader br;
 		ArrayList<String> linesToWrite = new ArrayList<String>();
@@ -340,13 +436,15 @@ public class TestEnc {
 
 				for (String className : classNames) {
 					if (newLine.contains(className)) {
-						//System.out.println("className : " + className + "m");
+						// System.out.println("className : " + className + "m");
 						String newStr = null;
-						String newClassName = className.substring(3, className.length());
+						String newClassName = className.substring(3,
+								className.length());
 						newStr = replaceDec(newClassName);
 						newStr = decrypt(newStr, encryptionAlgorithm);
-						
-//						System.out.println("after : " + newStr + "m");
+
+						// System.out.println("after : " + newStr + "m");
+						// System.out.println(newStr);
 						newLine = newLine.replace(className, newStr);
 					}
 				}
@@ -354,11 +452,11 @@ public class TestEnc {
 				for (String methodName : methodNames) {
 					if (newLine.contains(methodName)) {
 						String newStr = null;
-						String newMethodName = methodName.substring(5, methodName.length());
+						String newMethodName = methodName.substring(5,
+								methodName.length());
 						newStr = replaceDec(newMethodName);
 						newStr = decrypt(newStr, encryptionAlgorithm);
-						
-						
+
 						newLine = newLine.replace(methodName, newStr);
 					}
 				}
@@ -366,11 +464,11 @@ public class TestEnc {
 				for (String varName : varNames) {
 					if (newLine.contains(varName)) {
 						String newStr = null;
-						String newVarName = varName.substring(4, varName.length());
+						String newVarName = varName.substring(4,
+								varName.length());
 						newStr = replaceDec(newVarName);
 						newStr = decrypt(newStr, encryptionAlgorithm);
-						
-						
+
 						newLine = newLine.replace(varName, newStr);
 					}
 				}
@@ -397,17 +495,15 @@ public class TestEnc {
 
 		String fileName2 = fileName.substring(indexOfLastSlash + 1, indexOfDot);
 
-		//System.out.println("f : " + fileName2 + "m");
+		// System.out.println("f : " + fileName2 + "m");
 
-		
 		String newStr = null;
-		
+
 		String tempname = fileName2.substring(3, fileName2.length());
 		newStr = replaceDec(tempname);
 		newStr = decrypt(newStr, encryptionAlgorithm);
-		
 
-		//System.out.println("after2 : " + newStr + "m");
+		// System.out.println("after2 : " + newStr + "m");
 
 		String newFileName = dir + newStr
 				+ fileName.substring(indexOfDot, fileName.length());
@@ -428,12 +524,11 @@ public class TestEnc {
 				pw.close();
 			}
 		}
-		
-		
+
 	}
-	
-	
-	public static void main(String[] args) {
+
+	public static void main(String[] args) throws Exception {
+		// Login
 //		 String fileName =
 //		 "/Users/apple/Documents/workspace/Security Project/src/functions/Login.java";
 //		
@@ -446,25 +541,127 @@ public class TestEnc {
 //		 ArrayList<String> varNames = new ArrayList<String>();
 //		
 //		
-//		 encryptJavaFile(fileName, classNames, methodNames, varNames, "aes2");
-	 
-		 
-		 String fileName2 =
-				 "/Users/apple/Documents/workspace/Security Project/src/functions/Cl__open_brac_B_at_4b6995df.java";
-				
-				 ArrayList<String> classNames2 = new ArrayList<String>();
-				 classNames2.add("Cl__open_brac_B_at_4b6995df");
-				
-				 ArrayList<String> methodNames2 = new ArrayList<String>();
-				 methodNames2.add("meth__open_brac_B_at_2fc14f68");
-				
-				 ArrayList<String> varNames2 = new ArrayList<String>();
-				
-				
-				 decryptJavaFile(fileName2, classNames2, methodNames2, varNames2, "aes2");
+//		 encryptJavaFile(fileName, classNames, methodNames, varNames, "rc4");
+//		
+//		 // Register
+//		  String fileName2 =
+//		 
+//		 "/Users/apple/Documents/workspace/Security Project/src/functions/Register.java";
+//		 
+//		  ArrayList<String> classNames2 = new ArrayList<String>();
+//		  classNames2.add("Register");
+//		 
+//		  ArrayList<String> methodNames2 = new ArrayList<String>();
+//		  methodNames2.add("register");
+//		 
+//		  ArrayList<String> varNames2 = new ArrayList<String>();
+//		 
+//		 
+//		  encryptJavaFile(fileName2, classNames2, methodNames2, varNames2,
+//		 "aes");
+//		 //
+//		 // Deactivate
+//		 String fileName3 =
+//		 "/Users/apple/Documents/workspace/Security Project/src/functions/Deactivate.java";
+//		
+//		 ArrayList<String> classNames3 = new ArrayList<String>();
+//		 classNames3.add("Deactivate");
+//		
+//		 ArrayList<String> methodNames3 = new ArrayList<String>();
+//		 methodNames3.add("deactivate");
+//		
+//		 ArrayList<String> varNames3 = new ArrayList<String>();
+//		
+//		
+//		 encryptJavaFile(fileName3, classNames3, methodNames3, varNames3,
+//		 "desede");
+//		 
+//		 // Update
+//		 String fileName4 =
+//		 "/Users/apple/Documents/workspace/Security Project/src/functions/UpdateInfo.java";
+//		
+//		 ArrayList<String> classNames4 = new ArrayList<String>();
+//		 classNames4.add("UpdateInfo");
+//		
+//		 ArrayList<String> methodNames4 = new ArrayList<String>();
+//		 methodNames4.add("updateEmail");
+//		 methodNames4.add("updatePassword");
+//		 methodNames4.add("updateFirstName");
+//		 methodNames4.add("updateLastName");
+//		 methodNames4.add("updateAge");
+//		
+//		 ArrayList<String> varNames4 = new ArrayList<String>();
+//		
+//		
+//		 encryptJavaFile(fileName4, classNames4, methodNames4, varNames4,
+//		 "aes_ecb");
 
-		 
-		 
+		
+		// Decryption
+		
+		
+		String fileName2 = "/Users/apple/Documents/workspace/Security Project/src/functions/Cl__open_brac_B_at_3ac42916.java";
+
+		ArrayList<String> classNames2 = new ArrayList<String>();
+		classNames2.add("Cl__open_brac_B_at_3ac42916");
+
+		ArrayList<String> methodNames2 = new ArrayList<String>();
+		methodNames2.add("meth__open_brac_B_at_47d384ee");
+
+		ArrayList<String> varNames2 = new ArrayList<String>();
+
+		decryptJavaFile(fileName2, classNames2, methodNames2, varNames2, "rc4");
+
+		
+		String fileName4 = "/Users/apple/Documents/workspace/Security Project/src/functions/Cl__open_brac_B_at_445b84c0.java";
+
+		ArrayList<String> classNames4 = new ArrayList<String>();
+		classNames4.add("Cl__open_brac_B_at_445b84c0");
+
+		ArrayList<String> methodNames4 = new ArrayList<String>();
+		methodNames4.add("meth__open_brac_B_at_61a52fbd");
+
+		ArrayList<String> varNames4 = new ArrayList<String>();
+
+		decryptJavaFile(fileName4, classNames4, methodNames4, varNames4,
+				"aes");
+		
+		
+		// Deactivate
+		
+		String fileName3 = "/Users/apple/Documents/workspace/Security Project/src/functions/Cl__open_brac_B_at_2b80d80f.java";
+
+		ArrayList<String> classNames3 = new ArrayList<String>();
+		classNames3.add("Cl__open_brac_B_at_2b80d80f");
+
+		ArrayList<String> methodNames3 = new ArrayList<String>();
+		methodNames3.add("meth__open_brac_B_at_3ab39c39");
+
+		ArrayList<String> varNames3 = new ArrayList<String>();
+
+		decryptJavaFile(fileName3, classNames3, methodNames3, varNames3,
+				"desede");
+		
+		// UpdateInfo
+		
+		String fileName1 = "/Users/apple/Documents/workspace/Security Project/src/functions/Cl__open_brac_B_at_7907ec20.java";
+
+		ArrayList<String> classNames1 = new ArrayList<String>();
+		classNames1.add("Cl__open_brac_B_at_7907ec20");
+
+		ArrayList<String> methodNames1 = new ArrayList<String>();
+		methodNames1.add("meth__open_brac_B_at_546a03af");
+		methodNames1.add("meth__open_brac_B_at_721e0f4f");
+		methodNames1.add("meth__open_brac_B_at_28864e92");
+		methodNames1.add("meth__open_brac_B_at_6ea6d14e");
+		methodNames1.add("meth__open_brac_B_at_6ad5c04e");
+
+		ArrayList<String> varNames1 = new ArrayList<String>();
+
+		decryptJavaFile(fileName1, classNames1, methodNames1, varNames1,
+				"aes_ecb");
+
+		
 
 	}
 
